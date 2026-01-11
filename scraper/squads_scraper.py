@@ -4,13 +4,15 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from typing import Literal
 import json
 import time
 import base64
 import re
 import logging
 import atexit
-import pprint
+import pandas as pd
+
 
 logging.basicConfig(level=logging.INFO, format="%(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
@@ -36,6 +38,17 @@ def dismiss_cookie_banner(driver: webdriver.Chrome):
 
 
 class ScrapeSquads:
+    """
+    Scrape all squad information from opta
+    ### Example:
+        ```
+        scraper = ScrapeSquads(headless=True)
+        scraper.scrape()
+        scraper.filter_team_data()
+        scraper.save_data()
+        ```
+    """
+
     def __init__(
         self, headless: bool = True, chrome_exe: str = "/opt/homebrew/bin/chromedriver"
     ):
@@ -210,6 +223,7 @@ class ScrapeSquads:
         else:
             logger.warning(f"squad_data doesn't contain key `squad`")
 
+        # pprint.pprint(all_teams_data)
         if not self.click_dropdown():
             logger.error(f"Could not click on on teams dropdown")
             return
@@ -224,7 +238,7 @@ class ScrapeSquads:
                 team_name = team["name"]
                 team_url = team["url"]
 
-                logger.info(f"\n[{idx}/{len(teams)}] Processing: {team_name}")
+                logger.info(f"[{idx}/{len(teams)}] Processing: {team_name}")
                 logger.info(f"  URL: {team_url}")
 
                 # Navigate to team page
@@ -242,10 +256,66 @@ class ScrapeSquads:
             except Exception as e:
                 logger.error(f"Error processing {team_name}: {e}")
                 continue
-        return all_teams_data
+        self.squad_data = all_teams_data
+
+    def filter_team_data(self):
+        self.all_players = []
+        logger.info("Filtering player data..")
+
+        for team_name, squad_object in self.squad_data.items():
+            try:
+
+                team_object = squad_object[0]
+                team_code = team_object["contestantCode"]
+                team_id = team_object["contestantId"]
+                team_full_name = team_object["contestantName"]
+                team_short_name = team_object["contestantShortName"]
+
+                players: list = team_object["person"]
+
+                active_players = [
+                    {
+                        **player,
+                        "team_code": team_code,
+                        "team_id": team_id,
+                        "team_full_name": team_full_name,
+                        "team_short_name": team_short_name,
+                    }
+                    for player in players
+                    if player["active"] == "yes"
+                    and player["type"] == "player"
+                    and player["status"] == "active"
+                ]
+
+                self.all_players.extend(active_players)
+
+            except Exception as e:
+                logger.error(
+                    f"Error while filtering squad data for team {team_name}\n{e}"
+                )
+                continue
+
+    def save_data(
+        self,
+        format: Literal["json", "csv", "parquet"] = "parquet",
+        location: str = "data/squads/premier-league",
+        return_df: bool = False,
+    ):
+        if return_df is False:
+            logger.info(f"Saving active players as {location}.{format}")
+            if format == "parquet":
+                pd.DataFrame(self.all_players).to_parquet(f"{location}.{format}")
+            elif format == "json":
+                with open(f"{location}.{format}", "w") as f:
+                    json.dump(self.all_players, f, indent=2)
+            elif format == "csv":
+                pd.DataFrame(self.all_players).to_csv(f"{location}.{format}")
+        else:
+            return pd.DataFrame(self.all_players)
 
 
 if __name__ == "__main__":
-    scraper = ScrapeSquads(headless=False)
-    team_data = scraper.scrape()
-    print(team_data)
+    scraper = ScrapeSquads(headless=True)
+    scraper.scrape()
+    scraper.filter_team_data()
+    scraper.save_data()

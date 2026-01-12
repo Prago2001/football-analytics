@@ -147,6 +147,7 @@ class EventsDataParser:
             # ============================================================
             event_record = {
                 "id": _id,
+                "match_id": self.match_metadata["match_id"],
                 "type_id": raw_event.get("typeId"),
                 "type_name": OptaEventTypeReference.get_type_name(
                     raw_event.get("typeId")

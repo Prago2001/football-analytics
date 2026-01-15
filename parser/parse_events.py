@@ -15,18 +15,25 @@ logger = logging.getLogger(__name__)
 class EventsDataParser:
     """ """
 
-    def __init__(self, file_path: str):
+    def __init__(
+        self,
+        event_data_object: Dict,
+        file_path: str | None = None,
+    ):
         """
         :param file_path: Path of events JSON file
         :type file_path: str
         """
-        self.file_path = Path(file_path)
+
         self.raw_data: Dict = None
         self.df_events = None
         self.df_qualifiers = None
         self.match_metadata = {}
-
-        self.load_json()
+        if file_path is not None:
+            self.file_path = Path(file_path)
+            self.load_json()
+        else:
+            self.raw_data = event_data_object
         self.extract_match_metadata()
 
     def load_json(self) -> None:

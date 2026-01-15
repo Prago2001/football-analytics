@@ -78,7 +78,6 @@ class ScrapeMatchData:
             time.sleep(3)
 
             logs = self.driver.get_log("performance")
-            urls = []
             for entry in logs:
                 try:
                     msg = json.loads(entry["message"])
@@ -89,7 +88,7 @@ class ScrapeMatchData:
                         response = params.get("response", {})
                         request_id = params.get("requestId")
                         url = response.get("url", "")
-                        urls.append(url)
+
                         # Filter for PerformFeeds squad API
                         if "api.performfeeds.com" in url and any(
                             e in url for e in data_type
@@ -135,8 +134,6 @@ class ScrapeMatchData:
                 except Exception:
                     logger.error(f"Error while filtering network logs: {e}")
                     continue
-            with open(f"urls.txt", "w") as f:
-                f.write("\n".join(urls))
 
         except Exception as e:
             logger.error(f"Error capturing squads API: {e}")
@@ -182,14 +179,3 @@ class ScrapeMatchData:
         result = self.capture_data()
 
         return result.get("matchevent", {}), result.get("matchstats", {})
-
-
-if __name__ == "__main__":
-    match_data = ScrapeMatchData()
-    e, s = match_data.scrape(
-        "https://theanalyst.com/opta-football-match-centre?competitionId=2kwbbcootiqqgmrzs6o5inle5&seasonId=51r6ph2woavlbbpk8f29nynf8&matchId=3a1d79a5mxnvo53se2vrxwphw"
-    )
-    parser = EventsDataParser(e)
-    df_events, df_qualifiers = parser.parse_events_and_qualifiers()
-    df_stats = StatsParser(s).parse()
-    print(df_stats.head(10))

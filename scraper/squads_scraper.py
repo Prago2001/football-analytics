@@ -4,6 +4,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from webdriver_manager.chrome import ChromeDriverManager
 from typing import Literal
 import json
 import time
@@ -49,9 +50,7 @@ class ScrapeSquads:
         ```
     """
 
-    def __init__(
-        self, headless: bool = True, chrome_exe: str = "/opt/homebrew/bin/chromedriver"
-    ):
+    def __init__(self, headless: bool = True):
         """
         Initialize squad scraper
 
@@ -61,7 +60,7 @@ class ScrapeSquads:
         :param chrome_exe: Description
         :type chrome_exe: str
         """
-        service = Service(chrome_exe)
+        service = Service(ChromeDriverManager().install())
 
         opts = Options()
         opts.set_capability("goog:loggingPrefs", {"performance": "ALL"})

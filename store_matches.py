@@ -1,7 +1,7 @@
 from pathlib import Path
 import re
 from typing import Dict
-
+import argparse
 from parser.parse_events import EventsDataParser
 from parser.parse_stats import StatsParser
 from scraper.match_scraper import ScrapeMatchData
@@ -42,7 +42,9 @@ def build_match_directory(match_metadata: Dict, base_dir: str = "data/matches") 
     return match_dir
 
 
-def scrape_and_store_match(link: str, base_dir: str = "data/matches") -> Path:
+def scrape_and_store_match(
+    link: str, base_dir: str = "data/matches", headless=False
+) -> Path:
     """Scrape a single match and store its data in per-match parquet files.
 
     The directory structure is:
@@ -56,12 +58,13 @@ def scrape_and_store_match(link: str, base_dir: str = "data/matches") -> Path:
     Args:
         link: Full Opta/Opta Analyst match-centre URL.
         base_dir: Root directory under which match folders are created.
+        headless: False. Opens google chrome by default
 
     Returns:
         Path to the directory where this match's parquet files were written.
     """
     print(f"Scraping data for URL {link}")
-    match_scraper = ScrapeMatchData()
+    match_scraper = ScrapeMatchData(headless=headless)
     events_obj, stats_obj = match_scraper.scrape(link)
 
     # Parse events, qualifiers and metadata
@@ -87,6 +90,23 @@ def scrape_and_store_match(link: str, base_dir: str = "data/matches") -> Path:
 
 
 if __name__ == "__main__":
-    # Example usage (uncomment and replace with a real URL):
-    # scrape_and_store_match("https://theanalyst.com/opta-football-match-centre?...matchId=...")
-    pass
+
+    parser = argparse.ArgumentParser(description="Store match data using link")
+    parser.add_argument(
+        "-l",
+        "--links",
+        help="Link of all webpages which need to be parsed",
+        nargs="*",
+        required=True,
+    )
+    parser.add_argument(
+        "-H",
+        "--headless",
+        help="Opens google chrome by default.",
+        default=True,
+        action=argparse.BooleanOptionalAction,
+    )
+
+    args = parser.parse_args()
+    for link in args.links:
+        scrape_and_store_match(link, headless=args.headless)

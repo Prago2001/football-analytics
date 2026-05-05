@@ -38,9 +38,7 @@ def _slug(value: str) -> str:
 def _match_dir(row: pd.Series, base_dir: Path = OUT_DIR) -> Path:
     """Build the per-match directory path from a metadata row."""
     competition = (
-        row.get("competition_code")
-        or row.get("competition_name")
-        or "competition"
+        row.get("competition_code") or row.get("competition_name") or "competition"
     )
     home = row.get("home_team_name") or "home"
     away = row.get("away_team_name") or "away"
@@ -83,7 +81,9 @@ def migrate(
     df_events = pd.read_parquet(events_path) if events_path.exists() else pd.DataFrame()
     print(f"  events  : {len(df_events)} rows")
 
-    df_quals = pd.read_parquet(qualifiers_path) if qualifiers_path.exists() else pd.DataFrame()
+    df_quals = (
+        pd.read_parquet(qualifiers_path) if qualifiers_path.exists() else pd.DataFrame()
+    )
     print(f"  qualifiers: {len(df_quals)} rows")
 
     df_stats = pd.read_parquet(stats_path) if stats_path.exists() else pd.DataFrame()
@@ -91,7 +91,11 @@ def migrate(
 
     # ---- Build event_id → match_id lookup (from events) ------------------
     # events.parquet contains match_id directly; qualifiers join via event_id
-    if not df_events.empty and "match_id" in df_events.columns and "id" in df_events.columns:
+    if (
+        not df_events.empty
+        and "match_id" in df_events.columns
+        and "id" in df_events.columns
+    ):
         event_to_match = df_events.set_index("id")["match_id"].to_dict()
     else:
         event_to_match = {}
@@ -107,7 +111,7 @@ def migrate(
     # ---- Attach match_id to stats if not already present -----------------
     # stats.parquet may have 'match_id' or it may need deriving
     # (StatsParser already writes match_id; handle the case where it does not)
-    if not df_stats.empty and "match_id" not in df_stats.columns:
+    if not df_stats.empty and "matchId" not in df_stats.columns:
         print(
             "  WARNING: stats parquet has no match_id column – "
             "stats will not be split by match."
@@ -143,8 +147,8 @@ def migrate(
 
         # stats (filter by match_id if the column exists)
         if not df_stats.empty:
-            if "match_id" in df_stats.columns:
-                m_stats = df_stats[df_stats["match_id"] == match_id]
+            if "matchId" in df_stats.columns:
+                m_stats = df_stats[df_stats["matchId"] == match_id]
             else:
                 m_stats = pd.DataFrame()
             m_stats.to_parquet(match_dir / "stats.parquet", index=False)

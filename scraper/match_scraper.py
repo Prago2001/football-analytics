@@ -52,6 +52,10 @@ class ScrapeMatchData:
             {"enableNetwork": True, "enablePage": False, "traceCategories": "network"},
         )
         opts.add_argument("--start-maximized")
+        opts.add_argument("--no-sandbox")
+        opts.add_argument("--disable-dev-shm-usage")
+        opts.add_argument("--disable-gpu")
+        opts.add_argument("--remote-debugging-port=9222")
         if headless is True:
             opts.add_argument("--headless=new")
             logger.info("Starting squad scraper in headless mode")
@@ -60,8 +64,8 @@ class ScrapeMatchData:
         opts.add_experimental_option("excludeSwitches", ["enable-logging"])
         opts.add_argument("--log-level=3")
 
-        atexit.register(self.close_webdriver)
         self.driver = webdriver.Chrome(service=service, options=opts)
+        atexit.register(self.close_webdriver)
 
     def close_webdriver(self):
         self.driver.quit()

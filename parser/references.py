@@ -128,6 +128,9 @@ class OptaEventTypeReference:
 
 class OptaQualifierReference:
     QUALIFIERS = {
+        # ------------------------------------------------------------------ #
+        #  IDs 1-9  — core pass / shot / card qualifiers
+        # ------------------------------------------------------------------ #
         1: QualifierReference(1, "Long ball", "Boolean", "Pass over 35 yards"),
         2: QualifierReference(2, "Cross", "Boolean", "Ball from wide areas into box"),
         3: QualifierReference(3, "Head pass", "Boolean", "Pass made with head"),
@@ -141,11 +144,73 @@ class OptaQualifierReference:
             8, "Goal disallowed", "Boolean", "Pass led to disallowed goal"
         ),
         9: QualifierReference(9, "Penalty", "Boolean", "Penalty kick"),
+        # ------------------------------------------------------------------ #
+        #  IDs 10-14 — foul / handball sub-types
+        # ------------------------------------------------------------------ #
+        10: QualifierReference(
+            10, "Hand", "Boolean",
+            "Handball foul qualifier"
+        ),
+        12: QualifierReference(
+            12, "Dangerous play", "Boolean",
+            "Foul due to dangerous play"
+        ),
+        13: QualifierReference(
+            13, "Foul", "Boolean",
+            "Generic foul qualifier (all fouls)"
+        ),
+        14: QualifierReference(
+            14, "Last line", "Boolean",
+            "Defensive action as last player between opponent and goal"
+        ),
+        # ------------------------------------------------------------------ #
+        #  IDs 15-21 — head / foot / body part
+        # ------------------------------------------------------------------ #
         15: QualifierReference(15, "Head", "Boolean", "Action with head"),
+        # IDs 16-26 — shot zone / play type qualifiers
+        16: QualifierReference(
+            16, "Small box centre", "Boolean",
+            "Shot zone: 6-yard box centre (Appendix 13)"
+        ),
+        17: QualifierReference(
+            17, "Box centre", "Boolean",
+            "Shot zone: central part of penalty area"
+        ),
+        18: QualifierReference(
+            18, "Out of box centre", "Boolean",
+            "Shot zone: central area outside penalty box"
+        ),
+        19: QualifierReference(
+            19, "35+ centre", "Boolean",
+            "Shot zone: central area beyond 35 yards"
+        ),
         20: QualifierReference(20, "Right footed", "Boolean", "Shot with right foot"),
         21: QualifierReference(
             21, "Other body part", "Boolean", "Shot with other body part"
         ),
+        22: QualifierReference(
+            22, "Regular play", "Boolean",
+            "Shot during open play (not from a set piece)"
+        ),
+        23: QualifierReference(
+            23, "Fast break", "Boolean",
+            "Shot following a fast break"
+        ),
+        24: QualifierReference(
+            24, "Set piece", "Boolean",
+            "Shot from a crossed free kick"
+        ),
+        25: QualifierReference(
+            25, "From corner", "Boolean",
+            "Shot occurring directly from a corner"
+        ),
+        26: QualifierReference(
+            26, "Free kick", "Boolean",
+            "Shot occurring directly from a free kick"
+        ),
+        # ------------------------------------------------------------------ #
+        #  IDs 28-45 — event-level card / substitution / lineup qualifiers
+        # ------------------------------------------------------------------ #
         28: QualifierReference(28, "Own goal", "Boolean", "Own goal"),
         29: QualifierReference(29, "Assisted", "Boolean", "Shot had assist"),
         30: QualifierReference(30, "Involved", "Player IDs", "Players in lineup"),
@@ -168,16 +233,140 @@ class OptaQualifierReference:
         41: QualifierReference(41, "Injury", "Boolean", "Substitution for injury"),
         42: QualifierReference(42, "Tactical", "Boolean", "Substitution for tactics"),
         44: QualifierReference(44, "Player position", "Text", "GK/DEF/MID/FWD/SUB"),
+        # ------------------------------------------------------------------ #
+        #  IDs 46-55 — match / player / official event qualifiers
+        # ------------------------------------------------------------------ #
+        46: QualifierReference(
+            46, "Small box left", "Boolean",
+            "Shot zone: 6-yard box left side"
+        ),
+        47: QualifierReference(
+            47, "Small box right", "Boolean",
+            "Shot zone: 6-yard box right side"
+        ),
+        49: QualifierReference(
+            49, "Attendance figure", "Integer",
+            "Crowd attendance figure for the match"
+        ),
         50: QualifierReference(
             50, "Official position", "1-4", "Referee/Linesman positions"
         ),
         51: QualifierReference(51, "Official ID", "ID", "Unique official ID"),
         53: QualifierReference(53, "Injured player ID", "Player ID", "Injured player"),
         54: QualifierReference(54, "End cause", "1-100", "Reason for match end"),
+        55: QualifierReference(
+            55, "Related event ID", "Event ID",
+            "Event ID of the related assist or preceding event"
+        ),
         56: QualifierReference(56, "Zone", "Text", "Back/Left/Centre/Right"),
         57: QualifierReference(57, "End type", "Type", "End of match period"),
         59: QualifierReference(59, "Jersey number", "Integer", "Shirt number"),
+        # ------------------------------------------------------------------ #
+        #  IDs 60-70 — shot pitch zone qualifiers
+        # ------------------------------------------------------------------ #
+        60: QualifierReference(
+            60, "Box left", "Boolean",
+            "Shot zone: left side of the penalty area"
+        ),
+        61: QualifierReference(
+            61, "Box right", "Boolean",
+            "Shot zone: right side of the penalty area"
+        ),
+        62: QualifierReference(
+            62, "Box deep left", "Boolean",
+            "Shot zone: deep left of the penalty area"
+        ),
+        63: QualifierReference(
+            63, "Box deep right", "Boolean",
+            "Shot zone: deep right of the penalty area"
+        ),
+        64: QualifierReference(
+            64, "Out of box left", "Boolean",
+            "Shot zone: left area outside penalty box"
+        ),
+        65: QualifierReference(
+            65, "Out of box right", "Boolean",
+            "Shot zone: right area outside penalty box"
+        ),
+        66: QualifierReference(
+            66, "Out of box deep left", "Boolean",
+            "Shot zone: deep left outside the penalty box"
+        ),
+        68: QualifierReference(
+            68, "35+ left", "Boolean",
+            "Shot zone: left area beyond 35 yards"
+        ),
+        70: QualifierReference(
+            70, "35+ right", "Boolean",
+            "Shot zone: right area beyond 35 yards"
+        ),
         72: QualifierReference(72, "Left footed", "Boolean", "Shot with left foot"),
+        # ------------------------------------------------------------------ #
+        #  IDs 73-87 — goal mouth zone qualifiers
+        # ------------------------------------------------------------------ #
+        73: QualifierReference(
+            73, "Goal mouth low left", "Boolean",
+            "Goal mouth zone: low and to the left of GK"
+        ),
+        74: QualifierReference(
+            74, "Goal mouth low centre", "Boolean",
+            "Goal mouth zone: low central area"
+        ),
+        75: QualifierReference(
+            75, "Goal mouth low right", "Boolean",
+            "Goal mouth zone: low and to the right of GK"
+        ),
+        76: QualifierReference(
+            76, "Goal mouth mid left", "Boolean",
+            "Goal mouth zone: mid-height left of GK"
+        ),
+        77: QualifierReference(
+            77, "Goal mouth mid centre", "Boolean",
+            "Goal mouth zone: mid-height central area"
+        ),
+        78: QualifierReference(
+            78, "Goal mouth mid right", "Boolean",
+            "Goal mouth zone: mid-height right of GK"
+        ),
+        79: QualifierReference(
+            79, "Goal mouth high left", "Boolean",
+            "Goal mouth zone: high and to the left of GK"
+        ),
+        80: QualifierReference(
+            80, "Goal mouth high centre", "Boolean",
+            "Goal mouth zone: high central area"
+        ),
+        81: QualifierReference(
+            81, "Goal mouth high right", "Boolean",
+            "Goal mouth zone: high and to the right of GK"
+        ),
+        82: QualifierReference(
+            82, "Close low left", "Boolean",
+            "Goal mouth zone: close range low left of GK"
+        ),
+        83: QualifierReference(
+            83, "Close low centre", "Boolean",
+            "Goal mouth zone: close range low central"
+        ),
+        84: QualifierReference(
+            84, "Close low right", "Boolean",
+            "Goal mouth zone: close range low right of GK"
+        ),
+        85: QualifierReference(
+            85, "Close high left", "Boolean",
+            "Goal mouth zone: close range high left of GK"
+        ),
+        86: QualifierReference(
+            86, "Close high centre", "Boolean",
+            "Goal mouth zone: close range high central"
+        ),
+        87: QualifierReference(
+            87, "Close high right", "Boolean",
+            "Goal mouth zone: close range high right of GK"
+        ),
+        # ------------------------------------------------------------------ #
+        #  IDs 88-103 — GK saves / deflections / shot coordinates
+        # ------------------------------------------------------------------ #
         88: QualifierReference(88, "High claim", "Boolean", "GK high claim"),
         89: QualifierReference(89, "1 on 1", "Boolean", "Attacker 1-on-1 with GK"),
         90: QualifierReference(90, "Deflected save", "Boolean", "GK deflected save"),
@@ -186,7 +375,27 @@ class OptaQualifierReference:
         ),
         92: QualifierReference(92, "Catch", "Boolean", "GK catches"),
         93: QualifierReference(93, "Dive and catch", "Boolean", "GK dive and catch"),
+        94: QualifierReference(
+            94, "Def block", "Boolean",
+            "Defender block of an opposition shot"
+        ),
         95: QualifierReference(95, "Back pass", "Boolean", "Illegal GK back pass"),
+        100: QualifierReference(
+            100, "Six yard blocked", "Boolean",
+            "Shot blocked on the six-yard line"
+        ),
+        101: QualifierReference(
+            101, "Saved off line", "Boolean",
+            "Shot saved on or just in front of the goal line"
+        ),
+        102: QualifierReference(
+            102, "Goal mouth y coordinate", "0-100",
+            "Y coordinate where the shot crossed or was saved on the goal line"
+        ),
+        103: QualifierReference(
+            103, "Goal mouth z coordinate", "0-100",
+            "Height (Z) where the shot crossed or was saved on the goal line"
+        ),
         106: QualifierReference(
             106, "Attacking pass", "Boolean", "Pass in opposition half"
         ),
@@ -203,6 +412,10 @@ class OptaQualifierReference:
         122: QualifierReference(122, "Swerve moving", "Boolean", "Multiple swerves"),
         123: QualifierReference(123, "Keeper throw", "Boolean", "GK throws"),
         124: QualifierReference(124, "Goal kick", "Boolean", "Goal kick taken"),
+        127: QualifierReference(
+            127, "Direction of play", "Boolean",
+            "Actual direction of play relative to TV camera for coordinate normalisation"
+        ),
         128: QualifierReference(128, "Punch", "Boolean", "GK punches"),
         130: QualifierReference(
             130, "Team formation", "Formation ID", "Team formation"
@@ -220,6 +433,18 @@ class OptaQualifierReference:
         141: QualifierReference(141, "Pass End Y", "0-100", "Y coordinate of pass end"),
         144: QualifierReference(
             144, "Deleted event type", "Event ID", "Event to remove"
+        ),
+        145: QualifierReference(
+            145, "Formation slot (sub on)", "1-11",
+            "Formation slot for a player coming on as a substitute"
+        ),
+        146: QualifierReference(
+            146, "Blocked shot X", "0-100",
+            "X pitch coordinate where a shot was blocked"
+        ),
+        147: QualifierReference(
+            147, "Blocked shot Y", "0-100",
+            "Y pitch coordinate where a shot was blocked"
         ),
         152: QualifierReference(152, "Direct", "Boolean", "Direct free kick"),
         153: QualifierReference(153, "Not past goal line", "Boolean", "Shot missed"),
@@ -244,7 +469,19 @@ class OptaQualifierReference:
             165, "Professional foul", "Boolean", "Professional foul"
         ),
         166: QualifierReference(166, "Handling on line", "Boolean", "Handball block"),
+        167: QualifierReference(
+            167, "Out of play", "Boolean",
+            "Tackle or clearance sends ball out of play"
+        ),
         168: QualifierReference(168, "Flick-on", "Boolean", "Flick-on pass"),
+        169: QualifierReference(
+            169, "Leading to attempt", "Boolean",
+            "Player error (event 51) that leads to an opposition shot on goal"
+        ),
+        170: QualifierReference(
+            170, "Leading to goal", "Boolean",
+            "Player error that directly leads to an opposition goal"
+        ),
         171: QualifierReference(171, "Rescinded card", "Boolean", "Card rescinded"),
         172: QualifierReference(
             172, "No impact on timing", "Boolean", "Booked off bench"
@@ -263,10 +500,18 @@ class OptaQualifierReference:
         182: QualifierReference(182, "Hands", "Boolean", "GK saves with hands"),
         183: QualifierReference(183, "Feet", "Boolean", "GK saves with feet"),
         184: QualifierReference(184, "Dissent", "Boolean", "Card for dissent"),
+        185: QualifierReference(
+            185, "Blocked cross", "Boolean",
+            "Clearance where a cross is blocked"
+        ),
         186: QualifierReference(186, "Scored", "Stat", "Shot not saved = goal"),
         187: QualifierReference(187, "Saved", "Stat", "Shot saved"),
         188: QualifierReference(188, "Missed", "Stat", "Shot missed"),
         189: QualifierReference(189, "Player not visible", "Boolean", "Replay shown"),
+        190: QualifierReference(
+            190, "Saved shot off target", "Boolean",
+            "Shot saved by goalkeeper but was going wide of the goal"
+        ),
         191: QualifierReference(191, "Off ball foul", "Boolean", "Off-ball foul"),
         192: QualifierReference(192, "Block by hand", "Boolean", "Block by hand"),
         194: QualifierReference(194, "Captain", "Player ID", "Team captain ID"),
@@ -292,10 +537,18 @@ class OptaQualifierReference:
         208: QualifierReference(208, "Referee injury", "Boolean", "Referee injury"),
         209: QualifierReference(209, "Game end", "Boolean", "Game finished"),
         210: QualifierReference(210, "Assist", "Boolean", "Pass is assist"),
+        211: QualifierReference(
+            211, "Overrun", "Boolean",
+            "Take-on where the player loses the ball out of play or to an opponent"
+        ),
         212: QualifierReference(212, "Length", "Yards", "Pass distance in yards"),
         213: QualifierReference(213, "Angle", "Radians", "Ball angle (0-6.28)"),
         214: QualifierReference(214, "Big chance", "Boolean", "Big chance"),
         215: QualifierReference(215, "Individual play", "Boolean", "Individual play"),
+        216: QualifierReference(
+            216, "2nd related event ID", "Event ID",
+            "Event ID of a second assist/pre-assist in some competitions"
+        ),
         217: QualifierReference(217, "2nd assisted", "Boolean", "2nd assist"),
         218: QualifierReference(218, "2nd assist", "Boolean", "Pass created assist"),
         219: QualifierReference(
@@ -316,6 +569,10 @@ class OptaQualifierReference:
         226: QualifierReference(226, "Suspended", "Boolean", "Game suspended"),
         227: QualifierReference(227, "Resume", "Boolean", "Game resumed"),
         228: QualifierReference(228, "Own shot blocked", "Boolean", "Own shot blocked"),
+        229: QualifierReference(
+            229, "Post-match complete", "Boolean",
+            "Opta post-match QC completed for this match"
+        ),
         230: QualifierReference(230, "GK X coordinate", "Coordinate", "GK position X"),
         231: QualifierReference(231, "GK Y coordinate", "Coordinate", "GK position Y"),
         236: QualifierReference(236, "Blocked pass", "Boolean", "Blocked pass"),

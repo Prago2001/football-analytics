@@ -103,7 +103,7 @@ if __name__ == "__main__":
         "-H",
         "--headless",
         help="Opens google chrome by default.",
-        default=True,
+        default=False,
         action=argparse.BooleanOptionalAction,
     )
 
